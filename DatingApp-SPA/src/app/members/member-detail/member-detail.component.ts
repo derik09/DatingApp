@@ -32,6 +32,8 @@ export class MemberDetailComponent implements OnInit {
       preview: false
     }];
     this.galleryImages = [];
+
+    this.galleryImages = this.getImages();
   }
 
   getImages() {
@@ -40,7 +42,7 @@ export class MemberDetailComponent implements OnInit {
       imageUrls.push({
         small: photo.url,
         medium: photo.url,
-        large: photo.url,
+        big: photo.url,
         description: photo.description
       });
     }
