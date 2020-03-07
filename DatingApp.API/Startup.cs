@@ -20,6 +20,7 @@ using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using DatingApp.API.Helpers;
 using AutoMapper;
+using Microsoft.Extensions.Hosting;
 
 namespace DatingApp.API
 {
@@ -36,13 +37,13 @@ namespace DatingApp.API
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddDbContext<DataContext>(x => x.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1)
-            .AddJsonOptions(opt => {
+            services.AddControllers().AddNewtonsoftJson(opt => {
                 opt.SerializerSettings.ReferenceLoopHandling =
-                 Newtonsoft.Json.ReferenceLoopHandling.Ignore;
+                Newtonsoft.Json.ReferenceLoopHandling.Ignore;
             });
+            
             services.AddCors();
-            services.AddAutoMapper();
+            services.AddAutoMapper(typeof(DatingRepository).Assembly);
             services.AddTransient<Seed>();
             services.AddScoped<IAuthRepository, AuthRepository>();
             services.AddScoped<IDatingRepository, DatingRepository>();
@@ -61,7 +62,7 @@ namespace DatingApp.API
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env, Seed seeder)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             if (env.IsDevelopment())
             {
@@ -83,11 +84,20 @@ namespace DatingApp.API
             }
 
             // app.UseHttpsRedirection();
-            //seeder.SeedUsers();
+            
+            app.UseRouting();
+            
+            app.UseAuthentication();
+            app.UseAuthorization();
+            
             app.UseCors(x => x.WithOrigins("http://localhost:4200")
                 .AllowAnyMethod().AllowAnyHeader().AllowCredentials());
-            app.UseAuthentication();
-            app.UseMvc();
+            
+            app.UseEndpoints(endpoints => {
+                endpoints.MapControllers();
+            });
+
+            //app.UseMvc();
         }
     }
 }
