@@ -20,8 +20,8 @@ steps:
       inputs:
         version: '3.1.x'
         packageType: sdk
-    - script: dotnet build --configuration $(buildConfiguration)
-      displayName: 'dotnet build DatingApp.API/DatingApp.API.csproj $(buildConfiguration)'
+    - script: dotnet build DatingApp.API/DatingApp.API.csproj --configuration $(buildConfiguration)
+      displayName: 'dotnet build $(buildConfiguration)'
 
     - task: DotNetCoreCLI@2
       displayName: "Publish"
