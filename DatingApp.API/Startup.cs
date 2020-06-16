@@ -92,6 +92,9 @@ namespace DatingApp.API
             
             app.UseCors(x => x.WithOrigins("http://localhost:4200")
                 .AllowAnyMethod().AllowAnyHeader().AllowCredentials());
+
+            // app.UseCors(x => x.WithOrigins("http://192.168.99.100:8000")
+            //     .AllowAnyMethod().AllowAnyHeader().AllowCredentials());
             
             app.UseEndpoints(endpoints => {
                 endpoints.MapControllers();
